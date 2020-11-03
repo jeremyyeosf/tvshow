@@ -5,9 +5,9 @@ const PORT = 3000
 
 // configure connect pool
 const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST || 'db4free.net' || 'localhost',
     port: parseInt(process.env.DB_PORT) || 3306,
-    database: process.env.DB_NAME || 'leisure',
+    database: process.env.DB_NAME || 'televisionshows' ||'leisure',
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     connectionLimit: 4,
@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 })
 
 // SQL
-const SQL_GET_NAME_ORDER = 'select name from tv_shows order by name desc limit 20'
+const SQL_GET_NAME_ORDER = 'select name from tv_shows order by name desc limit ? offset ?'
 const SQL_GET_ALL_BY_NAME = 'select * from tv_shows where name = ?'
 const app = express()
 app.engine('hbs', handlebars({defaultLayout: 'default.hbs'}))
@@ -23,14 +23,25 @@ app.set('view engine', 'hbs')
 
 app.get('/', async (req, res) => {
     const conn = await pool.getConnection()
+    // set variables for limit, offset
+    const offset = parseInt(req.query['offset']) || 0
+    const limit = 10
+    // const pg1 = 0
+    // const pg2 = 10
+    // (pgNumber - 1) * limit 
     try {
-        const results = await conn.query(SQL_GET_NAME_ORDER)
+        const results = await conn.query(SQL_GET_NAME_ORDER, [limit, offset])
         // console.log('results:', results)
         // const television_shows = results[0].map(v => v.name)
         // console.log('television_shows:', television_shows)
+        console.log('offset: ', offset)
         res.status(200)
         res.type('text/html')
-        res.render('index', { television_shows: results[0] })
+        res.render('index', {
+            television_shows: results[0],
+            prevOffset: Math.max(0, offset - limit),
+            nextOffset: offset + limit
+        })
     } catch(e) {
         res.status(500)
         res.type('text/html')
@@ -38,6 +49,8 @@ app.get('/', async (req, res) => {
     } finally {
         conn.release()
     }
+    // render next/previous buttons
+    
 })
 
 app.get('/television_shows/:name', async (req, res) => {
@@ -47,6 +60,8 @@ app.get('/television_shows/:name', async (req, res) => {
     try {
         const results = await conn.query(SQL_GET_ALL_BY_NAME, [name])
         const recs = results[0]
+        console.log('recs: ', recs )
+        console.log('recs[0]: ', recs[0] )
         if (recs.length <= 0) {
             res.status(404)
             res.type('text/html')

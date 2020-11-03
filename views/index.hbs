@@ -9,6 +9,38 @@
     {{/each}}
 </div>
 
+            <tr>
+                <td>
+                    <form method="GET" action="/">
+                        <input type="hidden" name="offset" value={{ prevOffset }}>
+                        <button type="submit">Previous</button>
+                    </form>
+                </td>
+                
+                <td>
+                    <form method="GET" action="/">
+                        <input type="hidden" name="offset" value=0>
+                        <button type="submit">1</button>
+                    </form>
+                    <form method="GET" action="/">
+                        <input type="hidden" name="offset" value={{ 10 }}>
+                        <button type="submit">2</button>
+                    </form>
+                    <form method="GET" action="/">
+                        <input type="hidden" name="offset" value=20>
+                        <button type="submit">3</button>
+                    </form>
+                </td>
+
+                <td>
+                    <form method="GET" action="/">
+                        <input type="hidden" name="offset" value={{ nextOffset }}>
+                        <button type="submit">Next</button>
+                    </form>
+                </td>
+                
+            </tr>
+
 {{!-- 
 {{television_shows}}
 
