@@ -1,0 +1,34 @@
+<div class="jumbotron">
+  <h1 class="display-4">Television shows</h1>
+  <p class="lead">Click on the show title for more details.</p>
+</div>
+
+<div class="list-group">
+    {{#each television_shows}}
+        <a href="television_shows/{{this.name}}" class="list-group-item list-group-item-action">{{this.name}}</a>
+    {{/each}}
+</div>
+
+{{!-- 
+{{television_shows}}
+
+<h2>List of television shows</h2>
+
+<ul>
+    {{#each television_shows}}
+        <li>
+            <a href="television_shows/{{this.name}}">{{this.name}}</a>
+        </li>
+    {{/each}}
+</ul>
+
+<h2>List of Apps</h2>
+
+<ul>
+    {{#each apps}}
+        <li>
+            <a href="app/{{ this.app_id }}">{{ this.name }}</a>
+        </li>
+    {{/each}}
+
+</ul> --}}
